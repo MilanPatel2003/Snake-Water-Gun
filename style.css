@@ -1,0 +1,49 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+.container {
+  height: 750px;
+  width: 1200px;
+  background-color: rgb(63, 72, 206);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.container > div:nth-child(1) {
+  grid-column-start: span 3;
+}
+.title {
+  text-align: center;
+  font-size: 5rem;
+  font-family: "Righteous", cursive;
+}
+#header {
+    text-align: center;
+    font-size: 5rem;
+    font-family: "Righteous", cursive;
+  }
+.container div:hover{
+    opacity: 0.8;
+    background-color: antiquewhite;
+    cursor: pointer;
+}
+
+.img {
+  height: 200px;
+  width: 360px;
+}
+#snake{
+
+}
+#water{
+
+}
+#gun{
+
+}
