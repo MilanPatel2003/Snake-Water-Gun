@@ -93,7 +93,9 @@ function game() {
         resetGame();
       }, 2000);
     } else {
-      $("#header").text("Game Over! Refresh to play again.");
+      setTimeout(function () {
+        $("#header").text("Game Over! Refresh to play again.");
+      }, 2000);
     }
   });
 }
