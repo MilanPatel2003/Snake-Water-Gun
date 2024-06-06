@@ -5,10 +5,13 @@ var gunAudio = new Audio("assets/sound/gun.mp3");
 var waterAudio = new Audio("assets/sound/water.mp3");
 var lostAudio = new Audio("assets/sound/lost.mp3");
 var winAudio = new Audio("assets/sound/win.wav");
+var round = 1;
+var maxRounds = 5;
+var userScore = 0;
+var computerScore = 0;
 
 function user(event) {
   userChoice = $(event.target).attr("id");
-  // console.log("User choice: " + userChoice);
   return userChoice;
 }
 
@@ -28,7 +31,6 @@ function computer() {
       console.log("sorry");
       break;
   }
-  // console.log("Computer choice: " + computerChoice);
   return computerChoice;
 }
 
@@ -36,54 +38,66 @@ function playSound(sound) {
   sound.play();
 }
 
+function resetGame() {
+  $(".img, .title").fadeIn(1000);
+  $("#header").text("CHOOSE YOUR SIDE");
+}
+
+function updateScores() {
+  $("#user-score").text(userScore);
+  $("#computer-score").text(computerScore);
+}
+
+function updateRoundCounter() {
+  $("#round-counter").text(round);
+}
+
 function game() {
-  $("#snake,#water,#gun").one("click", function (e) {
+  $("#snake,#water,#gun").on("click", function (e) {
+    if (round > maxRounds) {
+      $("#header").text("Game Over! Refresh to play again.");
+      return;
+    }
+
     var usrChoice = user(e);
     var cmpChoice = computer();
-    console.log(usrChoice);
-    console.log(cmpChoice);
+    console.log(`Round ${round} - User: ${usrChoice}, Computer: ${cmpChoice}`);
 
-    if (usrChoice == "snake" && cmpChoice == "snake") {
-      $("#gun,.gun,#water,.water").fadeOut(1000);
+    // Hide the third option
+    $(".img, .title")
+      .not(`#${usrChoice}, #${cmpChoice}, .${usrChoice}, .${cmpChoice}`)
+      .fadeOut(1000);
+
+    if (usrChoice == cmpChoice) {
       $("#header").text("TIE!");
-    } else if (usrChoice == "water" && cmpChoice == "water") {
-      $("#gun,.gun,#snake,.snake").fadeOut(1000);
-      $("#header").text("TIE!");
-    } else if (usrChoice == "gun" && cmpChoice == "gun") {
-      $("#snake,.snake,#water,.water").fadeOut(1000);
-      $("#header").text("TIE!");
-    } else if (usrChoice == "snake" && cmpChoice == "water") {
-      $("#gun,.gun").fadeOut(1000);
-      $("#header").text("YOU WON!");
+    } else if (
+      (usrChoice == "snake" && cmpChoice == "water") ||
+      (usrChoice == "water" && cmpChoice == "gun") ||
+      (usrChoice == "gun" && cmpChoice == "snake")
+    ) {
+      $("#header").text(`YOU WON!`);
       playSound(winAudio);
-    } else if (usrChoice == "water" && cmpChoice == "gun") {
-      $("#snake,.snake").fadeOut(1000);
-      $("#header").text("YOU WON!");
-      playSound(winAudio);
-    } else if (usrChoice == "gun" && cmpChoice == "snake") {
-      $("#water,.water").fadeOut(1000);
-      $("#header").text("YOU WON!");
-      playSound(winAudio);
+      userScore++;
     } else {
-      if (usrChoice == "water" && cmpChoice == "snake") {
-        $("#gun,.gun").fadeOut(1000);
-        $("#header").text("YOU LOSE!");
-        playSound(lostAudio);
-      } else if (usrChoice == "gun" && cmpChoice == "water") {
-        $("#snake,.snake").fadeOut(1000);
-        $("#header").text("YOU LOSE!");
-        playSound(lostAudio);
-      } else {
-        $("#water,.water").fadeOut(1000);
-        $("#header").text("YOU LOSE!");
-        playSound(lostAudio);
-      }
+      $("#header").text(`YOU LOSE!`);
+      playSound(lostAudio);
+      computerScore++;
     }
-    $("#header").hide();
-    setTimeout(function () {
-      $("#header").fadeIn(100);
-    }, 100);
+
+    updateScores();
+
+    if (round < maxRounds) {
+      round++;
+      updateRoundCounter();
+      setTimeout(function () {
+        resetGame();
+      }, 2000);
+    } else {
+      $("#header").text("Game Over! Refresh to play again.");
+    }
   });
 }
 
-game();
+$(document).ready(function () {
+  game();
+});
